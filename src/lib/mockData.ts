@@ -6,7 +6,7 @@ export type ChannelCategory =
   | "교육/자기계발"
   | "게임"
   | "금융/경제"
-  | "스포츠/피트니스"
+  | "스포츠"
   | "엔터테인먼트";
 
 export type ChannelStatus = "ACTIVE" | "UPCOMING";
@@ -168,7 +168,7 @@ export const channels: Channel[] = [
     id: "ch-006",
     name: "런치박스 피트니스",
     handle: "@lunchbox_fit",
-    category: "스포츠/피트니스",
+    category: "스포츠",
     status: "ACTIVE",
     subscriberCount: 295000,
     avgViews: 58000,
@@ -250,6 +250,6 @@ export const categories: ChannelCategory[] = [
   "교육/자기계발",
   "게임",
   "금융/경제",
-  "스포츠/피트니스",
+  "스포츠",
   "엔터테인먼트",
 ];

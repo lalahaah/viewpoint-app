@@ -104,16 +104,16 @@ export const ChannelGrid = ({ onChannelClick }: ChannelGridProps) => {
         </div>
       </div>
 
-      {/* Filter bar */}
+      {/* Filter bar - Category Row */}
       <div className="border-b border-black bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           {/* Desktop filter row */}
-          <div className="hidden md:flex items-center divide-x divide-black overflow-x-auto">
+          <div className="hidden md:grid grid-cols-[80px_repeat(9,1fr)] overflow-x-auto">
             {/* ALL */}
             <button
               onClick={() => setActiveCategory("ALL")}
               className={cn(
-                "px-5 py-3 text-xs font-black uppercase tracking-widest shrink-0 transition-colors w-24",
+                "px-5 py-3 text-xs font-black uppercase tracking-widest transition-colors border-r border-black text-center",
                 activeCategory === "ALL"
                   ? "bg-black text-white"
                   : "text-black hover:bg-black hover:text-white"
@@ -121,20 +121,24 @@ export const ChannelGrid = ({ onChannelClick }: ChannelGridProps) => {
             >
               전체
             </button>
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={cn(
-                  "px-5 py-3 text-xs font-black uppercase tracking-widest shrink-0 transition-colors",
-                  activeCategory === cat
-                    ? "bg-black text-white"
-                    : "text-black hover:bg-black hover:text-white"
-                )}
-              >
-                {cat}
-              </button>
-            ))}
+            {categories.map((cat, idx) => {
+              const isLast = idx === categories.length - 1;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={cn(
+                    "px-5 py-3 text-xs font-black uppercase tracking-widest transition-colors text-center",
+                    !isLast && "border-r border-black",
+                    activeCategory === cat
+                      ? "bg-black text-white"
+                      : "text-black hover:bg-black hover:text-white"
+                  )}
+                >
+                  {cat}
+                </button>
+              );
+            })}
           </div>
 
           {/* Mobile: toggle */}
@@ -194,15 +198,15 @@ export const ChannelGrid = ({ onChannelClick }: ChannelGridProps) => {
 
       {/* Sub-filter: Status + Sort */}
       <div className="border-b border-black">
-        <div className="max-w-7xl mx-auto px-6 py-0 flex items-center justify-between overflow-x-auto">
-          {/* Status tabs */}
-          <div className="flex items-center divide-x divide-black border-r border-black">
+        <div className="max-w-7xl mx-auto px-6 py-0">
+          <div className="hidden md:grid grid-cols-[80px_repeat(9,1fr)] items-stretch">
+            {/* Status tabs - cols 1-3 */}
             {(["ALL", "ACTIVE", "UPCOMING"] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => setActiveStatus(s)}
                 className={cn(
-                  "py-3 text-xs font-black uppercase tracking-widest shrink-0 transition-colors w-24 flex items-center justify-center",
+                  "py-3 px-0 text-xs font-black uppercase tracking-widest transition-colors border-r border-black flex items-center justify-center",
                   activeStatus === s
                     ? "bg-black text-white"
                     : "text-black hover:bg-gray-100"
@@ -211,29 +215,39 @@ export const ChannelGrid = ({ onChannelClick }: ChannelGridProps) => {
                 {s === "ALL" ? "전체" : s === "ACTIVE" ? "운영 중" : "오픈 예정"}
               </button>
             ))}
+
+            {/* Empty spacers - cols 4-6 */}
+            {[0, 1, 2].map((i) => (
+              <div key={`spacer-${i}`} className={i === 2 ? "border-r border-black" : ""} />
+            ))}
+
+            {/* Sort buttons - cols 7-10 */}
+            {(Object.keys(SORT_LABELS) as SortKey[]).map((key, idx) => {
+              const isLast = idx === 3;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setSortKey(key)}
+                  className={cn(
+                    "py-3 px-3 text-xs font-bold uppercase tracking-widest transition-colors flex items-center justify-center",
+                    !isLast && "border-r border-black",
+                    sortKey === key
+                      ? "bg-black text-white"
+                      : "text-gray-500 hover:text-black hover:bg-gray-100"
+                  )}
+                >
+                  {SORT_LABELS[key]}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Sort */}
-          <div className="flex items-center divide-x divide-black border-l border-black">
-            {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => setSortKey(key)}
-                className={cn(
-                  "px-4 py-3 text-xs font-bold uppercase tracking-widest shrink-0 transition-colors hidden md:block",
-                  sortKey === key
-                    ? "bg-black text-white"
-                    : "text-gray-500 hover:text-black hover:bg-gray-100"
-                )}
-              >
-                {SORT_LABELS[key]}
-              </button>
-            ))}
-            {/* Mobile sort select */}
+          {/* Mobile sort select */}
+          <div className="md:hidden flex items-center justify-between py-3">
             <select
               value={sortKey}
               onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="md:hidden px-4 py-3 text-xs font-bold uppercase bg-white border-none outline-none"
+              className="px-4 py-3 text-xs font-bold uppercase bg-white border border-black outline-none"
             >
               {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
                 <option key={key} value={key}>

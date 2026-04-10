@@ -41,16 +41,16 @@ export const ChannelCard = ({ channel, index, onClick }: ChannelCardProps) => {
           className="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
           style={{ backgroundImage: `url(${channel.thumbnailUrl})` }}
         />
-        {/* Badges (stacked on top-right) */}
-        <div className="absolute top-0 right-0 flex flex-col">
+        {/* Badges (horizontal row at top-right) */}
+        <div className="absolute top-0 right-0 flex flex-row">
           {/* Status badge */}
           <div>
             {isUpcoming ? (
-              <span className="bg-black text-white text-xs font-black uppercase tracking-widest px-3 py-1 border-l border-b border-black">
+              <span className="bg-black text-white text-xs font-black uppercase tracking-widest px-3 py-1 border-b border-black">
                 OPEN SOON
               </span>
             ) : (
-              <span className="bg-white text-black text-xs font-black uppercase tracking-widest px-3 py-1 border-l border-b border-black">
+              <span className="bg-white text-black text-xs font-black uppercase tracking-widest px-3 py-1 border-b border-black">
                 ACTIVE
               </span>
             )}
@@ -79,17 +79,22 @@ export const ChannelCard = ({ channel, index, onClick }: ChannelCardProps) => {
           {channel.description}
         </p>
 
-        {/* Stats row */}
+        {/* Stats row - unified height */}
         {isUpcoming ? (
-          <div className="border border-black px-4 py-3 flex items-center gap-2 bg-gray-50">
+          <div className="border border-black px-4 py-0 flex items-center gap-2 bg-gray-50 h-20">
             <Calendar size={14} className="text-gray-500 shrink-0" />
-            <span className="text-xs font-bold text-gray-700 uppercase tracking-widest">
-              론칭 예정: {channel.launchDate ?? "미정"}
-            </span>
+            <div className="flex flex-col justify-center">
+              <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
+                론칭 예정
+              </span>
+              <span className="text-lg font-black text-black uppercase tracking-tight">
+                {channel.launchDate ?? "미정"}
+              </span>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-3 divide-x divide-black border border-black">
-            <div className="px-3 py-2 flex flex-col items-center">
+          <div className="grid grid-cols-3 divide-x divide-black border border-black h-20">
+            <div className="px-3 py-0 flex flex-col items-center justify-center">
               <Users size={12} className="text-gray-400 mb-1" />
               <span className="text-sm font-black text-black leading-none">
                 {formatNumber(channel.subscriberCount)}
@@ -98,7 +103,7 @@ export const ChannelCard = ({ channel, index, onClick }: ChannelCardProps) => {
                 구독자
               </span>
             </div>
-            <div className="px-3 py-2 flex flex-col items-center">
+            <div className="px-3 py-0 flex flex-col items-center justify-center">
               <Eye size={12} className="text-gray-400 mb-1" />
               <span className="text-sm font-black text-black leading-none">
                 {formatNumber(channel.avgViews)}
@@ -107,7 +112,7 @@ export const ChannelCard = ({ channel, index, onClick }: ChannelCardProps) => {
                 평균 조회
               </span>
             </div>
-            <div className="px-3 py-2 flex flex-col items-center">
+            <div className="px-3 py-0 flex flex-col items-center justify-center">
               <TrendingUp size={12} className="text-gray-400 mb-1" />
               <span className="text-sm font-black text-black leading-none">
                 {channel.engagementRate}%
@@ -133,18 +138,18 @@ export const ChannelCard = ({ channel, index, onClick }: ChannelCardProps) => {
       </div>
 
       {/* Footer: price CTA */}
-      <div className="border-t border-black px-5 py-3 flex items-center justify-between">
+      <div className="border-t border-black px-5 py-3 flex items-center justify-between min-h-[72px]">
         <div>
-          <span className="text-[10px] text-gray-400 uppercase tracking-widest font-medium">
+          <span className="text-[10px] text-gray-400 uppercase tracking-widest font-medium block">
             최저 패키지
           </span>
-          <p className="text-base font-black text-black leading-none mt-0.5">
+          <p className="text-base font-black text-black leading-none mt-1">
             {formatPrice(lowestPrice)}~
           </p>
         </div>
-        <span className="text-xs font-black uppercase tracking-widest border border-black px-4 py-2 group-hover:bg-black group-hover:text-white transition-colors">
+        <button className="text-xs font-black uppercase tracking-widest border border-black px-4 py-2 group-hover:bg-black group-hover:text-white transition-colors flex-shrink-0">
           상세 보기 →
-        </span>
+        </button>
       </div>
     </motion.article>
   );

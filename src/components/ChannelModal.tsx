@@ -10,6 +10,9 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  Download,
+  CheckCircle2,
+  Clock,
 } from "lucide-react";
 import { Channel } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
@@ -58,6 +61,7 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
   }, [channel]);
 
   const images = channel?.portfolioImages ?? [];
+  const isUpcoming = channel?.status === "UPCOMING";
 
   const prevImage = () =>
     setGalleryIndex((i) => (i - 1 + images.length) % images.length);
@@ -90,7 +94,7 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
               "fixed z-50 bg-white border border-black",
               "top-4 left-4 right-4 bottom-4",
               "md:top-8 md:left-1/2 md:-translate-x-1/2 md:right-auto md:bottom-auto",
-              "md:w-full md:max-w-4xl md:max-h-[90vh]",
+              "md:w-full md:max-w-5xl md:max-h-[90vh]",
               "overflow-y-auto flex flex-col"
             )}
             onClick={(e) => e.stopPropagation()}
@@ -129,11 +133,11 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
             </div>
 
             <div className="flex flex-col md:flex-row flex-1 min-h-0">
-              {/* Left Column */}
-              <div className="md:w-[55%] flex flex-col border-b md:border-b-0 md:border-r border-black">
+              {/* Left Column - Data & Content */}
+              <div className="md:w-[55%] flex flex-col border-b md:border-b-0 md:border-r border-black overflow-y-auto">
 
                 {/* Gallery Slider */}
-                <div className="relative aspect-video bg-gray-100 border-b border-black overflow-hidden">
+                <div className="relative aspect-video bg-gray-100 border-b border-black overflow-hidden shrink-0">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={galleryIndex}
@@ -187,24 +191,8 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                   </div>
                 </div>
 
-                {/* Thumbnail strip */}
-                <div className="flex divide-x divide-black border-b border-black">
-                  {images.map((src, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setGalleryIndex(i)}
-                      className={cn(
-                        "flex-1 aspect-square bg-cover bg-center transition-opacity",
-                        i === galleryIndex ? "opacity-100 ring-2 ring-inset ring-black" : "opacity-50 hover:opacity-80"
-                      )}
-                      style={{ backgroundImage: `url(${src})` }}
-                      aria-label={`이미지 ${i + 1} 선택`}
-                    />
-                  ))}
-                </div>
-
                 {/* Description */}
-                <div className="px-6 py-5 border-b border-black flex-1">
+                <div className="px-6 py-5 border-b border-black">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
                     채널 소개
                   </p>
@@ -216,7 +204,7 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                     {channel.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[10px] font-bold uppercase tracking-widest border border-black px-2 py-0.5 rounded-full text-black"
+                        className="text-[10px] font-bold uppercase tracking-widest border border-black px-2 py-0.5 rounded-none text-black"
                       >
                         {tag}
                       </span>
@@ -224,12 +212,83 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                   </div>
                 </div>
 
-                {/* Stats Grid */}
-                {channel.status === "ACTIVE" ? (
-                  <div className="grid grid-cols-3 divide-x divide-black border-b border-black">
+                {/* 4-Metric Grid or Pre-launch Box */}
+                {isUpcoming ? (
+                  <>
+                    {/* Pre-launch: Launch Date Box */}
+                    <div className="px-6 py-6 border-b border-black bg-gray-50">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                        론칭 예정일
+                      </p>
+                      <div className="border-t border-b border-black py-4">
+                        <p className="text-2xl font-black text-black">
+                          {channel.launchDate ?? "미정"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Pitch Deck Download */}
+                    <div className="px-6 py-5 border-b border-black hover:bg-gray-50 transition-colors cursor-pointer">
+                      <button className="w-full flex items-center gap-3 text-left">
+                        <Download size={16} className="text-gray-500 shrink-0" />
+                        <div>
+                          <p className="text-sm font-black text-black">기획안(Pitch Deck) 다운로드</p>
+                          <p className="text-xs text-gray-500 mt-1">PDF 형식의 채널 기획안</p>
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Creator Skills + Milestone Timeline */}
+                    <div className="divide-x divide-black border-b border-black grid grid-cols-2">
+                      {/* Left: Creator Skills */}
+                      <div className="px-6 py-5">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                          제작진 역량
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">YouTube 파트너십 경험</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">3년+ 콘텐츠 제작 경력</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle2 size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">스튜디오 인프라 구축</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Right: Milestone Timeline */}
+                      <div className="px-6 py-5">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                          런칭 마일스톤
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start gap-2">
+                            <Clock size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">기획 완료: 2025년 Q2</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <Clock size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">촬영 및 편집: Q3</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <Clock size={14} className="text-black shrink-0 mt-0.5" />
+                            <span className="text-xs text-black font-medium">공식 런칭: 2025년 9월</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  /* Active: 4-Metric Grid */
+                  <div className="grid grid-cols-2 divide-x divide-y divide-black border-b border-black">
                     <div className="px-4 py-4 flex flex-col items-center gap-1">
                       <Users size={14} className="text-gray-400" />
-                      <span className="text-xl font-black text-black leading-none">
+                      <span className="text-lg font-black text-black leading-none">
                         {formatNumber(channel.subscriberCount)}
                       </span>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider">
@@ -238,7 +297,7 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                     </div>
                     <div className="px-4 py-4 flex flex-col items-center gap-1">
                       <Eye size={14} className="text-gray-400" />
-                      <span className="text-xl font-black text-black leading-none">
+                      <span className="text-lg font-black text-black leading-none">
                         {formatNumber(channel.avgViews)}
                       </span>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider">
@@ -247,31 +306,70 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                     </div>
                     <div className="px-4 py-4 flex flex-col items-center gap-1">
                       <TrendingUp size={14} className="text-gray-400" />
-                      <span className="text-xl font-black text-black leading-none">
+                      <span className="text-lg font-black text-black leading-none">
                         {channel.engagementRate}%
                       </span>
                       <span className="text-[10px] text-gray-400 uppercase tracking-wider">
                         참여율
                       </span>
                     </div>
+                    <div className="px-4 py-4 flex flex-col items-center gap-1">
+                      <Clock size={14} className="text-gray-400" />
+                      <span className="text-lg font-black text-black leading-none">
+                        --
+                      </span>
+                      <span className="text-[10px] text-gray-400 uppercase tracking-wider">
+                        평균 시청 지속시간
+                      </span>
+                    </div>
                   </div>
-                ) : (
-                  <div className="px-6 py-4 flex items-center gap-3 border-b border-black bg-gray-50">
-                    <Calendar size={16} className="text-gray-500 shrink-0" />
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                        론칭 예정일
-                      </p>
-                      <p className="text-sm font-black text-black">
-                        {channel.launchDate ?? "미정"}
-                      </p>
+                )}
+
+                {/* Viewer Demographics */}
+                {!isUpcoming && (
+                  <div className="px-6 py-5 border-b border-black">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                      주요 시청자층
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-600">20-30세</span>
+                        <div className="flex-1 ml-4 h-2 bg-gray-200 border border-black" style={{ width: "60%" }} />
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-600">30-40세</span>
+                        <div className="flex-1 ml-4 h-2 bg-gray-200 border border-black" style={{ width: "25%" }} />
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-600">40세 이상</span>
+                        <div className="flex-1 ml-4 h-2 bg-gray-200 border border-black" style={{ width: "15%" }} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent References */}
+                {!isUpcoming && (
+                  <div className="px-6 py-5">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                      최근 협찬 레퍼런스
+                    </p>
+                    <div className="space-y-2">
+                      <div className="border border-black px-3 py-2">
+                        <p className="text-xs font-bold text-black">브랜드 A - 제품 리뷰 영상</p>
+                        <p className="text-[10px] text-gray-500">2025년 3월</p>
+                      </div>
+                      <div className="border border-black px-3 py-2">
+                        <p className="text-xs font-bold text-black">브랜드 B - 스폰서십</p>
+                        <p className="text-[10px] text-gray-500">2025년 2월</p>
+                      </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Right Column: Pricing Table */}
-              <div className="md:w-[45%] flex flex-col">
+              {/* Right Column: Sales & CTA */}
+              <div className="md:w-[45%] flex flex-col overflow-y-auto">
                 {/* Section header */}
                 <div className="px-6 py-4 border-b border-black bg-black text-white shrink-0">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-0.5">
@@ -311,18 +409,35 @@ export const ChannelModal = ({ channel, onClose }: ChannelModalProps) => {
                   ))}
                 </div>
 
+                {/* Risk Guarantee (Pre-launch only) */}
+                {isUpcoming && (
+                  <div className="px-6 py-6 border-b border-black bg-black text-white">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3">
+                      광고주 안심 보장제
+                    </p>
+                    <div className="border border-white px-4 py-3">
+                      <p className="text-xs font-bold text-white leading-relaxed">
+                        채널 론칭 후 합의 조회수에 미달할 경우<br/>
+                        광고료의 전액 또는 일부를 보상해 드립니다.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* CTA */}
                 <div className="border-t border-black p-6 shrink-0">
                   <p className="text-[10px] text-gray-500 leading-relaxed mb-4">
-                    스폰서십 문의는 로그인 후 제안서를 작성하거나, 아래 버튼으로
-                    담당 매니저에게 직접 연락할 수 있습니다.
+                    {isUpcoming
+                      ? "선점 협찬 기회를 놓치지 마세요. 아래 버튼으로 담당 매니저에게 연락할 수 있습니다."
+                      : "스폰서십 문의는 로그인 후 제안서를 작성하거나, 아래 버튼으로 담당 매니저에게 직접 연락할 수 있습니다."
+                    }
                   </p>
                   <div className="flex flex-col gap-2">
                     <button className="w-full bg-black text-white font-black uppercase tracking-widest text-sm py-3.5 border border-black hover:bg-white hover:text-black transition-colors">
                       스폰서십 제안하기 →
                     </button>
                     <button className="w-full bg-white text-black font-black uppercase tracking-widest text-sm py-3 border border-black hover:bg-gray-50 transition-colors">
-                      문의 저장
+                      {isUpcoming ? "문의 저장" : "관심 채널 담기"}
                     </button>
                   </div>
                 </div>

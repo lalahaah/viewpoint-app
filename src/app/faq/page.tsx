@@ -120,29 +120,32 @@ export default function FaqPage() {
       </div>
 
       {/* FAQ content */}
-      <div className="max-w-7xl mx-auto">
-        {faqSections.map((section) => (
-          <div key={section.section} className="border-b border-black">
-            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] divide-y md:divide-y-0 md:divide-x divide-black">
-              {/* Section label */}
-              <div className="p-6 md:p-8 md:sticky md:top-[105px] self-start">
-                <p className={cn(
-                  "text-xs font-black uppercase tracking-widest text-gray-400 mb-2",
-                )}>Section</p>
-                <h2 className="text-xl font-black text-black uppercase leading-tight font-serif">
-                  {section.section}
-                </h2>
-                <p className="text-xs text-gray-400 mt-2 font-mono">{section.items.length}개 항목</p>
-              </div>
-              {/* Items */}
-              <div className="divide-y divide-black">
-                {section.items.map((item, i) => (
-                  <FaqItem key={i} q={item.q} a={item.a} />
-                ))}
-              </div>
+      <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] divide-y md:divide-y-0 md:divide-x divide-black">
+        {/* Left sidebar */}
+        <div className="col-start-1 md:col-start-1 md:row-span-full">
+          {faqSections.map((section) => (
+            <div key={section.section} className="p-6 md:p-8 border-b border-black">
+              <p className={cn(
+                "text-xs font-black uppercase tracking-widest text-gray-400 mb-2",
+              )}>Section</p>
+              <h2 className="text-xl font-black text-black uppercase leading-tight font-serif">
+                {section.section}
+              </h2>
+              <p className="text-xs text-gray-400 mt-2 font-mono">{section.items.length}개 항목</p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Right content */}
+        <div className="col-start-1 md:col-start-2">
+          {faqSections.map((section) => (
+            <div key={section.section} className="border-b border-black divide-y divide-black">
+              {section.items.map((item, i) => (
+                <FaqItem key={i} q={item.q} a={item.a} />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Contact CTA */}
