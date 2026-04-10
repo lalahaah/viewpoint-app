@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"/Users/lahabiz/Desktop/project 2026/viewpoint-app\" remote -v)"
+    ]
+  }
+}
